@@ -1,4 +1,4 @@
-package com.wd3.automated.api.models.authorizationModel;
+package com.wd3.automated.api.models.authorizationModel.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -7,16 +7,18 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.annotation.Generated;
+
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @Accessors(chain = true)
-public class AuthorizationModel{
+public class Result{
 
-	@JsonProperty("login")
-	private String login;
+	@JsonProperty("message")
+	private String message;
 
-	@JsonProperty("password")
-	private String password;
+	@JsonProperty("token")
+	private String token;
 }

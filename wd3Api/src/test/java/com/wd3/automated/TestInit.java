@@ -1,13 +1,18 @@
 package com.wd3.automated;
 
-import com.wd3.automated.api.models.authorizationModel.AuthorizationModel;
+import com.wd3.automated.api.models.authorizationModel.request.AuthorizationModel;
+import com.wd3.automated.api.models.authorizationModel.response.AuthorizationResponseModel;
 import com.wd3.automated.api.service.api.authorization_service.AuthorizationService;
 import io.qameta.allure.TmsLink;
 import org.testng.annotations.Test;
 
 import static com.wd3.automated.api.conditions.Conditions.bodyField;
 import static com.wd3.automated.api.conditions.Conditions.statusCode;
+import static com.wd3.automated.api.properties.UserProp.USER_NAME_LOGIN;
+import static com.wd3.automated.api.properties.UserProp.USER_PASSWORD;
 import static org.hamcrest.Matchers.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 public class TestInit {
 
@@ -15,21 +20,30 @@ public class TestInit {
 
     @TmsLink(value = "64231")
     @Test(description = "Generate token for authorization")
-    public void doLoginOperatorCorrectData() {
+    public void testGenerateAuthorizationTokenVersion1Example() {
         AuthorizationModel authorizationModel = new AuthorizationModel()
-                .setLogin("AntonWD3")
-                .setPassword("QAZ123");
+                .setLogin(USER_NAME_LOGIN)
+                .setPassword(USER_PASSWORD);
 
-        authorizationService.authorization(authorizationModel)
-                .shouldHave((statusCode(201)),
-                        bodyField("loggedIn", is(true)),
-                        bodyField("token", not(empty())),
-                        bodyField("userId", not(empty())));
+        AuthorizationResponseModel authorizationResponseModel = authorizationService.authorization(authorizationModel)
+                .shouldHave(statusCode(200))
+                .responseAs(AuthorizationResponseModel.class);
+
+        assertEquals(authorizationResponseModel.getResult().getMessage(),"Logged in successfully.");
+        assertNotNull(authorizationResponseModel.getResult().getToken(), "Token is null");
     }
 
-//    @TmsLink(value = "64233")
-//    @Test(description = "Login Operator with correct data")
-//    public void doLoginOperatorCorrectData() {
-//    }
+    @TmsLink(value = "64231")
+    @Test(description = "Generate token for authorization")
+    public void testGenerateAuthorizationTokenVersion2Example() {
+        AuthorizationModel authorizationModel = new AuthorizationModel()
+                .setLogin(USER_NAME_LOGIN)
+                .setPassword(USER_PASSWORD);
+
+                authorizationService.authorization(authorizationModel)
+                .shouldHave((statusCode(200)),
+                        bodyField("result.message", containsString("Logged in successfully.")),
+                        bodyField("result.token", not(empty())));
+    }
 
 }
