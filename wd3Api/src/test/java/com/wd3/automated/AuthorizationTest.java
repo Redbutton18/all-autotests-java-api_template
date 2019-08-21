@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-public class TestInit {
+public class AuthorizationTest {
 
     private AuthorizationService authorizationService = new AuthorizationService();
 
