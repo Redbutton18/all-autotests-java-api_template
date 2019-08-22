@@ -4,7 +4,9 @@ import com.wd3.automated.api.models.actionServiceModel.parkingTriggersModel.post
 import com.wd3.automated.api.service.api.parkingTriggers_service.ParkingTriggerService;
 import io.qameta.allure.Step;
 
+import static com.wd3.automated.api.conditions.Conditions.bodyField;
 import static com.wd3.automated.api.conditions.Conditions.statusCode;
+import static org.hamcrest.Matchers.equalTo;
 
 public class ParkingTriggerSteps {
 
@@ -20,6 +22,13 @@ public class ParkingTriggerSteps {
                 .responseAs( "result", PostParkingTriggerModel.class);
 
         return postParkingTriggerResponseModel;
+    }
+
+    @Step("Delete Parking trigger By triggerId")
+    public void deleteParkingTriggerByTriggerId(String authToken, int triggerId) {
+        parkingTriggerService.delete_parkingTriggerById(authToken, triggerId)
+                .shouldHave(statusCode(200),
+                        bodyField("result.triggerId", equalTo(triggerId)));
     }
 
 }

@@ -7,7 +7,9 @@ import io.qameta.allure.TmsLink;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import static com.wd3.automated.api.conditions.Conditions.bodyField;
 import static com.wd3.automated.api.conditions.Conditions.statusCode;
+import static org.hamcrest.Matchers.containsString;
 import static org.testng.Assert.assertEquals;
 
 public class Post_ParkingTriggerTest {
@@ -26,7 +28,7 @@ public class Post_ParkingTriggerTest {
 
     @TmsLink(value = "65953")
     @Test(description = "Post Parking Trigger ")
-    public void testPostParkingTriggerEndPoint () {
+    public void testPostParkingTriggerEndPoint() {
         PostParkingTriggerModel postParkingTriggerModel = new PostParkingTriggerModel().randomize().setModuleName("parking");
 
         PostParkingTriggerModel postParkingTriggerResponseModel = parkingTriggerService
@@ -35,6 +37,24 @@ public class Post_ParkingTriggerTest {
                 .responseAs("result", PostParkingTriggerModel.class);
 
         assertEquals(postParkingTriggerModel.getTriggerId(), postParkingTriggerResponseModel.getTriggerId());
+        assertEquals(postParkingTriggerModel.getModuleName(), postParkingTriggerResponseModel.getModuleName());
+        assertEquals(postParkingTriggerModel.getActiveAlertType(), postParkingTriggerResponseModel.getActiveAlertType());
+        assertEquals(postParkingTriggerModel.getActiveSourceType(), postParkingTriggerResponseModel.getActiveSourceType());
+        assertEquals(postParkingTriggerModel.getConditionParamValue().toString(), postParkingTriggerResponseModel.getConditionParamValue().toString());
+
     }
+
+    @TmsLink(value = "65963")
+    @Test(description = "Post Parking Trigger Without Authorization Token ")
+    public void testPostParkingTriggerWithoutAuthorizationToken() {
+        PostParkingTriggerModel postParkingTriggerModel = new PostParkingTriggerModel().randomize().setModuleName("parking");
+
+        parkingTriggerService
+                .post_actionService("", postParkingTriggerModel)
+                .shouldHave(statusCode(401),
+                        bodyField("result.error", containsString("Authentication Required.")));
+
+    }
+
 
 }

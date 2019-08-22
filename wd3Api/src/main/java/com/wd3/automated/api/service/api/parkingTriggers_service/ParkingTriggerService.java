@@ -35,4 +35,16 @@ public class ParkingTriggerService extends Wd3SetupApiService {
         return new AssertableResponse(register);
     }
 
+    @Step("Send Delete action-service/parking/triggerId/{triggerId} request Without Token")
+    public AssertableResponse delete_parkingTriggerByIdWithoutToken(String token, long triggerId) {
+        log.info("Parking trigger {}", triggerId);
+        Response register =
+                baseSetupHeaders()
+                        .header("Authorization", "Bearer " + token)
+                        .when()
+                        .delete("action-service/parking/triggerId/" + triggerId)
+                        .then().extract().response();
+        return new AssertableResponse(register);
+    }
+
 }
